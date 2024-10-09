@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package bigfile.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service FileTransferService {
+  rpc GetFile(FileRequest) returns (stream FileResponse) {};
+}
+
+message FileRequest {
+  string file_name = 1;
+  int32 chunk_number = 2;
+}
+
+message FileResponse {
+  message Stat {
+    google.protobuf.Timestamp last_modified = 1;
+    int32 total_size = 2;
+  }
+
+  message Chunk {
+    int32 chunk_number = 1;
+    int32 chunk_size = 2;
+    int32 total_chunks = 3;
+    bool end = 4;
+    bytes data = 5;
+  }
+
+  string name = 1;
+  Stat stat = 2;
+  Chunk chunk = 3;
+}
